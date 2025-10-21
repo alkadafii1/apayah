@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semangat Meng! 🐱</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset dan Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --pink-light: #fff5f7;
+            --pink-medium: #f8c8dc;
+            --pink-dark: #e75480;
+            --purple-light: #f3e8ff;
+            --purple-medium: #d8b4fe;
+            --mint: #e0f2f1;
+            --text-dark: #4a3b3b;
+            --text-light: #795548;
+            --lavender: #e6e6fa;
+        }
+
+        body {
+            background-color: var(--pink-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: linear-gradient(to bottom right, var(--pink-light), var(--lavender));
+            min-height: 100vh;
+        }
+
+        /* Canvas untuk animasi bunga */
+        #flower-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, rgba(255, 245, 247, 0.9), rgba(243, 232, 255, 0.9));
+            color: var(--text-dark);
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--pink-dark);
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .personal-message {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 1.2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Main Content Styles */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .quote-container {
+            background-color: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .quote-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .quote-text {
+            font-size: 1.6rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            font-size: 1.1rem;
+            color: var(--pink-dark);
+            font-weight: 500;
+        }
+
+        .heart-icon {
+            color: var(--pink-dark);
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #d16ba5, #c777b9, #ba83ca);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Cat Section */
+        .cat-section {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .cat-container {
+            background-color: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: inline-block;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .cat-container:hover {
+            transform: scale(1.05);
+        }
+
+        .cat-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cat-message {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 300px;
+        }
+
+        /* Mood Tracker Section */
+        .mood-tracker {
+            background-color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin: 4rem 0;
+        }
+        
+        .mood-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+        
+        .mood-option {
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .mood-option:hover {
+            transform: scale(1.2);
+            background-color: var(--pink-light);
+        }
+        
+        .mood-option.selected {
+            transform: scale(1.3);
+            background-color: var(--pink-medium);
+        }
+        
+        .mood-message {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--pink-dark);
+            font-weight: 500;
+        }
+
+        /* Challenges Section */
+        .challenges-section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+            color: var(--text-dark);
+            position: relative;
+            font-weight: 600;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--pink-medium), var(--purple-medium));
+            margin: 0.8rem auto;
+            border-radius: 10px;
+        }
+
+        .challenges-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .challenge-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .challenge-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--pink-medium), var(--purple-medium));
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .challenge-icon {
+            font-size: 3rem;
+            color: var(--pink-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .challenge-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .motivation-text {
+            color: var(--pink-dark);
+            font-weight: 500;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        /* Music Section */
+        .music-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .spotify-embed {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--pink-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, var(--purple-light), var(--mint));
+            padding: 3rem 1rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pink-dark);
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px);
+            background-color: var(--pink-medium);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .quote-text {
+                font-size: 1.3rem;
+            }
+            
+            .challenges-container, .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .cat-icon {
+                font-size: 4rem;
+            }
+            
+            .mood-options {
+                gap: 0.5rem;
+            }
+            
+            .mood-option {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .quote-text {
+                font-size: 1.1rem;
+            }
+            
+            .quote-container {
+                padding: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas untuk animasi bunga -->
+    <canvas id="flower-canvas"></canvas>
+
+    <header>
+        <div class="header-content">
+            <h1>Semangat Meng! 🐱</h1>
+            <p class="subtitle">Semester 3 memang penuh tantangan, tapi aku tahu kamu kuat 💪</p>
+            <div class="personal-message">
+                <p>Kamu pasti bisa lewat semua ini satu per satu, dan hasilnya bakal sepadan sama usahamu 🤍</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="quote-section">
+            <div class="quote-container">
+                <p class="quote-text" id="quote-text">"Pelan-pelan aja, nggak harus sempurna. yang penting apa? yang penting terus maju 🌷"</p>
+                <p class="quote-author" id="quote-author">- Semangat meng! -</p>
+                <button class="btn" id="new-quote-btn">
+                    <span class="heart-icon">❤️</span> Klik untuk Motivasi Baru <span class="heart-icon">❤️</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="cat-section">
+            <div class="cat-container" id="cat-button">
+                <div class="cat-icon">🐱</div>
+                <p class="cat-message" id="cat-message">Klik aku untuk semangat!</p>
+            </div>
+        </section>
+
+        <section class="mood-tracker">
+            <h2 class="section-title">Bagaimana perasaanmu hari ini?</h2>
+            <div class="mood-options">
+                <div class="mood-option" data-mood="happy">😊</div>
+                <div class="mood-option" data-mood="excited">🤩</div>
+                <div class="mood-option" data-mood="tired">😴</div>
+                <div class="mood-option" data-mood="stressed">😫</div>
+                <div class="mood-option" data-mood="proud">🥹</div>
+            </div>
+            <p class="mood-message" id="mood-message">Pilih emoji yang sesuai dengan perasaanmu!</p>
+        </section>
+
+        <section class="challenges-section">
+            <h2 class="section-title">Tantangan yang Kamu Hadapi</h2>
+            <div class="challenges-container">
+                <div class="challenge-card floating">
+                    <div class="challenge-icon"><i class="fas fa-flask"></i></div>
+                    <h3 class="challenge-title">Ujian Praktikum</h3>
+                    <p class="challenge-desc">Menghadapi berbagai praktikum dengan ketelitian dan kesabaran.</p>
+                    <p class="motivation-text">Kamu sudah berlatih dengan baik, pasti bisa!</p>
+                </div>
+                <div class="challenge-card floating" style="animation-delay: 1s;">
+                    <div class="challenge-icon"><i class="fas fa-book-open"></i></div>
+                    <h3 class="challenge-title">UTS</h3>
+                    <p class="challenge-desc">Ujian Tengah Semester yang membutuhkan persiapan matang.</p>
+                    <p class="motivation-text">Pelan-pelan aja, nggak harus sempurna — yang penting apa? yang penting terus maju 🌷</p>
+                </div>
+                <div class="challenge-card floating" style="animation-delay: 2s;">
+                    <div class="challenge-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3 class="challenge-title">Magang</h3>
+                    <p class="challenge-desc">Pengalaman profesional pertama di dunia kerja.</p>
+                    <p class="motivation-text">Ini waktunya kamu tumbuh dan nemuin versi terbaik dari dirimu ✨</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="music-section">
+            <h2 class="section-title">Playlist Semangat</h2>
+            <div class="spotify-embed">
+                <iframe src="https://open.spotify.com/embed/playlist/4kcnKRmSborAIG8gJqDrwm?utm_source=generator&theme=0&view=coverart" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">Tetap semangat menjalani UTS, praktikum, dan magang! Semua usaha kerasmu akan membuahkan hasil yang manis. Kamu pasti bisa! 💕</p>
+            <div class="social-icons">
+                <a href="#" class="social-icon"><i class="fas fa-heart"></i></a>
+                <a href="#" class="social-icon"><i class="fas fa-star"></i></a>
+                <a href="#" class="social-icon"><i class="fas fa-graduation-cap"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Array of motivational quotes
+        const quotes = [
+            {
+                text: "Pelan-pelan aja, nggak harus sempurna. yang penting apa? yang penting terus maju 🌷",
+                author: "Semangat yaa"
+            },
+            {
+                text: "Kamu lebih kuat dari yang kamu kira. Semester 3 ini adalah tantangan, tapi kamu pasti bisa melewatinya dengan gemilang!",
+                author: "Percayalah pada dirimu"
+            },
+            {
+                text: "Setiap ujian yang kamu hadapi, membawamu selangkah lebih dekat kepada kesuksesan.",
+                author: "Tetap semangat!"
+            },
+            {
+                text: "Jangan lupa beristirahat yang cukup di sela-sela kesibukan UTS dan praktikum. Kesehatanmu juga penting!",
+                author: "Jaga dirimu selalu"
+            },
+            {
+                text: "Kamu kereen kamu pasti bisa ngelewatin UTS, praktikum, dan magang. Hebat!",
+                author: "Kamu luar biasa"
+            },
+            {
+                text: "Ingat, nilai bukan segalanya. Yang terpenting adalah proses belajarmu dan pengalaman yang kamu dapat.",
+                author: "Nikmati perjalanan akademismu"
+            },
+            {
+                text: "Semester 3 mungkin melelahkan, tapi lihatlah betapa banyak skill baru yang sudah kamu kuasai!",
+                author: "Terus berkembang"
+            },
+            {
+                text: "Tenang, persiapkan dengan baik, dan lakukan yang terbaik!",
+                author: "Kamu pasti bisa!"
+            },
+            {
+                text: "Cobaan memberimu pengalaman berharga yang tak ternilai. Manfaatkan setiap kesempatan sebaik-baiknya!",
+                author: "Masa depan menantimu"
+            }
+        ];
+
+        // Array of cat messages
+        const catMessages = [
+            "Kamu keren banget! 💕 - nyaa",
+            "Semangat ya, kamu pasti bisa! 🌟 -meoww",
+            "Jangan lupa istirahat yang cukup! 😴 -nyaa",
+            "Kamu lebih kuat dari yang kamu pikir! 💪 -meooww",
+            "Setiap langkah kecil membawamu lebih dekat ke tujuan! 🐾 -nyaa",
+            "Kamu sedang melakukan yang terbaik! 🌸 -nyaa",
+            "Percayalah pada prosesnya! 🌈 -nyaa",
+            "Kamu nggak sendirian, aku di sini buat kamu! 🤗 -nyaa",
+            "Hari ini adalah kesempatan baru! ☀️ -meoww",
+            "Kamu layak dapat yang terbaik! ✨ -nyaa"
+        ];
+
+        // Mood messages
+        const moodMessages = {
+            happy: "Yay! Senang banget lihat kamu bahagia! Terus pertahankan energi positif ini! 🌈",
+            excited: "Wihh semangatnya! Pasti ada hal seru nih hari ini. Semoga harimu menyenangkan! 🎉",
+            tired: "Waduh, kayaknya capek ya? Jangan lupa istirahat yang cukup, ya! Kamu kuat! 💤",
+            stressed: "Tenang, ambil napas dalam-dalam. Kamu bisa melewati ini, satu per satu. Aku percaya! 🌸",
+            proud: "Awww, bangga ya? Kamu memang layak untuk merasa bangga! Kerja kerasmu terbayar! 🥹"
+        };
+
+        // DOM Elements
+        const quoteTextElement = document.getElementById('quote-text');
+        const quoteAuthorElement = document.getElementById('quote-author');
+        const newQuoteButton = document.getElementById('new-quote-btn');
+        const catButton = document.getElementById('cat-button');
+        const catMessageElement = document.getElementById('cat-message');
+        const moodOptions = document.querySelectorAll('.mood-option');
+        const moodMessageElement = document.getElementById('mood-message');
+
+        // Function to get a random quote
+        function getRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            return quotes[randomIndex];
+        }
+
+        // Function to get a random cat message
+        function getRandomCatMessage() {
+            const randomIndex = Math.floor(Math.random() * catMessages.length);
+            return catMessages[randomIndex];
+        }
+
+        // Function to display a new quote
+        function displayNewQuote() {
+            const quote = getRandomQuote();
+            quoteTextElement.textContent = `"${quote.text}"`;
+            quoteAuthorElement.textContent = `- ${quote.author}`;
+            
+            // Add a subtle animation
+            quoteTextElement.style.opacity = 0;
+            quoteAuthorElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                quoteTextElement.style.opacity = 1;
+                quoteAuthorElement.style.opacity = 1;
+            }, 300);
+        }
+
+        // Function to display a new cat message
+        function displayNewCatMessage() {
+            const message = getRandomCatMessage();
+            catMessageElement.textContent = message;
+            
+            // Add a subtle animation
+            catButton.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                catButton.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Event listeners
+        newQuoteButton.addEventListener('click', displayNewQuote);
+        catButton.addEventListener('click', displayNewCatMessage);
+
+        // Add event listeners for mood options
+        moodOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                moodOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Get the mood and display appropriate message
+                const mood = this.getAttribute('data-mood');
+                moodMessageElement.textContent = moodMessages[mood];
+            });
+        });
+
+        // Initialize features
+        displayNewQuote();
+
+        // Canvas animation for flowers
+        const canvas = document.getElementById('flower-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Flower class
+        class Flower {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 20 + 10;
+                this.speed = Math.random() * 0.5 + 0.2;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.bloomProgress = 0;
+                this.blooming = false;
+                this.bloomSpeed = Math.random() * 0.02 + 0.01;
+                this.color = `hsl(${Math.random() * 60 + 300}, 70%, 70%)`;
+            }
+            
+            update() {
+                this.y -= this.speed;
+                
+                if (this.y < -this.size) {
+                    this.y = canvas.height + this.size;
+                    this.x = Math.random() * canvas.width;
+                    this.bloomProgress = 0;
+                    this.blooming = false;
+                }
+                
+                if (!this.blooming && this.y < canvas.height * 0.8) {
+                    this.blooming = true;
+                }
+                
+                if (this.blooming && this.bloomProgress < 1) {
+                    this.bloomProgress += this.bloomSpeed;
+                }
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                
+                // Draw flower petals
+                const petalCount = 5;
+                const petalSize = this.size * this.bloomProgress;
+                
+                for (let i = 0; i < petalCount; i++) {
+                    const angle = (i / petalCount) * Math.PI * 2;
+                    const petalX = this.x + Math.cos(angle) * petalSize;
+                    const petalY = this.y + Math.sin(angle) * petalSize;
+                    
+                    ctx.beginPath();
+                    ctx.ellipse(petalX, petalY, petalSize, petalSize/2, angle, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Draw flower center
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.3 * this.bloomProgress, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+        
+        // Create flowers
+        const flowers = [];
+        for (let i = 0; i < 30; i++) {
+            flowers.push(new Flower());
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            flowers.forEach(flower => {
+                flower.update();
+                flower.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
